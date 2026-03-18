@@ -265,3 +265,64 @@ export async function clearUserData(userId: string): Promise<void> {
 
     await Promise.all([...transPromises, ...budgetPromises]);
 }
+
+
+// ═══════════════════════════════════════════════════════════════════
+// APPEND THIS BLOCK to: app/src/services/firestoreService.ts
+// (add after the "Learning Paths" section at the bottom of the file)
+// ═══════════════════════════════════════════════════════════════════
+
+// ─── Savings Goals ───────────────────────────────────────────
+
+export interface FirestoreGoal {
+    id?: string;
+    title: string;
+    emoji: string;
+    targetAmount: number;
+    savedAmount: number;
+    deadline: string;    // ISO date string e.g. '2026-12-31'
+    color: string;       // hex accent colour
+    createdAt: string;
+}
+
+/** Add a new savings goal */
+export async function addGoal(
+    userId: string,
+    goal: Omit<FirestoreGoal, 'id'>
+): Promise<string> {
+    const ref = await addDoc(
+        collection(db, 'users', userId, 'goals'),
+        goal
+    );
+    return ref.id;
+}
+
+/** Fetch all goals for a user */
+export async function getGoals(userId: string): Promise<FirestoreGoal[]> {
+    const q = query(
+        collection(db, 'users', userId, 'goals'),
+        orderBy('createdAt', 'desc')
+    );
+    const snap = await getDocs(q);
+    return snap.docs.map((d) => ({ id: d.id, ...d.data() } as FirestoreGoal));
+}
+
+/** Update saved amount on a goal */
+export async function updateGoalSaved(
+    userId: string,
+    goalId: string,
+    savedAmount: number
+): Promise<void> {
+    await updateDoc(
+        doc(db, 'users', userId, 'goals', goalId),
+        { savedAmount }
+    );
+}
+
+/** Delete a goal */
+export async function deleteGoal(
+    userId: string,
+    goalId: string
+): Promise<void> {
+    await deleteDoc(doc(db, 'users', userId, 'goals', goalId));
+}

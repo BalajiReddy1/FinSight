@@ -4,6 +4,7 @@ import feedReducer from './slices/feedSlice';
 import transactionsReducer from './slices/transactionsSlice';
 import budgetsReducer from './slices/budgetsSlice';
 import learningReducer from './slices/learningSlice';
+import goalsReducer from './slices/goalsSlice';          // ← NEW
 
 export const store = configureStore({
     reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
         transactions: transactionsReducer,
         budgets: budgetsReducer,
         learning: learningReducer,
+        goals: goalsReducer,                             // ← NEW
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({

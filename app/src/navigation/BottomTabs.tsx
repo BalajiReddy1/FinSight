@@ -3,9 +3,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { FeedScreen } from '../screens/FeedScreen';
 import { VitalsScreen } from '../screens/VitalsScreen';
 import { LearnScreen } from '../screens/LearnScreen';
+import { GoalsScreen } from '../screens/GoalsScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import { COLORS } from '../theme/tokens';
 import { View, Text, Platform } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const Tab = createBottomTabNavigator();
 
@@ -16,6 +18,8 @@ const TabIcon: React.FC<{ emoji: string; focused: boolean }> = ({ emoji, focused
 );
 
 export const BottomTabs: React.FC = () => {
+    const insets = useSafeAreaInsets();
+    
     return (
         <Tab.Navigator
             screenOptions={{
@@ -26,9 +30,9 @@ export const BottomTabs: React.FC = () => {
                     backgroundColor: '#FFFFFF',
                     borderTopWidth: 1,
                     borderTopColor: COLORS.border.default,
-                    height: Platform.OS === 'ios' ? 85 : 65,
+                    height: (Platform.OS === 'ios' ? 85 : 65) + insets.bottom,
                     paddingTop: 8,
-                    paddingBottom: Platform.OS === 'ios' ? 25 : 10,
+                    paddingBottom: (Platform.OS === 'ios' ? 25 : 10) + insets.bottom,
                 },
                 tabBarLabelStyle: {
                     fontSize: 11,
@@ -50,6 +54,14 @@ export const BottomTabs: React.FC = () => {
                 options={{
                     tabBarLabel: 'Vitals',
                     tabBarIcon: ({ focused }) => <TabIcon emoji="📊" focused={focused} />,
+                }}
+            />
+            <Tab.Screen
+                name="Goals"                                    // ← NEW TAB
+                component={GoalsScreen}
+                options={{
+                    tabBarLabel: 'Goals',
+                    tabBarIcon: ({ focused }) => <TabIcon emoji="🎯" focused={focused} />,
                 }}
             />
             <Tab.Screen
