@@ -33,3 +33,7 @@ app/yarn-error.*
 app/*.tsbuildinfo
 app/ios
 app/android
+firestore_rules_setup.md
+PRD.md
+DesignDoc.md
+techstack.md
