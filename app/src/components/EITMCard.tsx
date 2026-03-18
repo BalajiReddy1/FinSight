@@ -13,7 +13,7 @@ export const EITMCard: React.FC<EITMCardProps> = ({ card }) => {
         <TouchableOpacity
             activeOpacity={0.9}
             onPress={() => setExpanded(!expanded)}
-            className="mx-4 rounded-2xl p-4 bg-ai-bg border-2 border-ai-border relative overflow-hidden"
+            className="flex-1 rounded-2xl p-4 bg-ai-bg border border-brand-primary/30 relative overflow-hidden"
             accessible
             accessibilityLabel={`AI-generated insight: ${card.headline}`}
             accessibilityRole="button"

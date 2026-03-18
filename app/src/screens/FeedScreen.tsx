@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, Text, ScrollView, RefreshControl, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, RefreshControl, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Plus } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -39,7 +39,14 @@ export const FeedScreen: React.FC = () => {
     const eitmCards = useAppSelector((state) => state.feed.eitmCards);
     const transactions = useAppSelector((state) => state.transactions.items);
     const budgets = useAppSelector((state) => state.budgets.items);
+    const transactionsError = useAppSelector((state) => state.transactions.error);
+    const budgetsError = useAppSelector((state) => state.budgets.error);
     const [refreshing, setRefreshing] = React.useState(false);
+
+    useEffect(() => {
+        if (transactionsError) Alert.alert('Transaction Sync Error', transactionsError);
+        if (budgetsError) Alert.alert('Budget Sync Error', budgetsError);
+    }, [transactionsError, budgetsError]);
 
     useEffect(() => {
         // Kick off real market data fetch (falls back to mocks on failure).
@@ -160,10 +167,27 @@ export const FeedScreen: React.FC = () => {
                     />
                 </View>
 
-                {/* EITM Card #1 */}
-                {eitmCards[0] && (
-                    <View className="mt-4">
-                        <EITMCard card={eitmCards[0]} />
+                {/* EITM Cards Carousel */}
+                {eitmCards.length > 0 && (
+                    <View className="mt-5">
+                        <View className="px-4 mb-2 flex-row items-center">
+                            <Text className="text-[10px] font-bold tracking-widest text-brand-primary uppercase">
+                                🤖 AI Insights & Alerts
+                            </Text>
+                        </View>
+                        <ScrollView 
+                            horizontal 
+                            showsHorizontalScrollIndicator={false} 
+                            contentContainerStyle={{ paddingHorizontal: 16 }}
+                            decelerationRate="fast"
+                            snapToInterval={316} // 300 width + 16 gap
+                        >
+                            {eitmCards.map((card, idx) => (
+                                <View key={card.id || idx} style={{ width: 300, marginRight: 16 }}>
+                                    <EITMCard card={card} />
+                                </View>
+                            ))}
+                        </ScrollView>
                     </View>
                 )}
 
@@ -177,12 +201,7 @@ export const FeedScreen: React.FC = () => {
                     />
                 </View>
 
-                {/* EITM Card #2 */}
-                {eitmCards[1] && (
-                    <View className="mt-4">
-                        <EITMCard card={eitmCards[1]} />
-                    </View>
-                )}
+
 
                 {/* Recent Transactions */}
                 <View className="mt-4 mx-4 bg-white border border-border rounded-xl overflow-hidden mb-6">

@@ -87,43 +87,38 @@ export const FinancialVitals: React.FC<FinancialVitalsProps> = ({
 
     return (
         <View className="bg-white border border-border rounded-xl p-4 mx-4">
-            {/* Header */}
-            <View className="flex-row items-center mb-1">
-                <Text className="text-lg mr-2">💰</Text>
-                <Text className="text-lg font-semibold text-text-primary">This Month</Text>
+            <View className="flex-row justify-between">
+                {/* Left side: Total & Trend */}
+                <View className="flex-1 mr-4">
+                    <Text className="text-xs font-bold text-text-secondary mb-1 uppercase tracking-wider">This Month</Text>
+                    <Text
+                        className="text-2xl font-bold text-text-primary mb-2"
+                        style={{ fontVariant: ['tabular-nums'] }}
+                    >
+                        ₹{totalSpent.toLocaleString('en-IN')}
+                    </Text>
+                    <View className="h-12 w-full opacity-70">
+                        <SpendingTrendChart data={weeklyTrend} />
+                    </View>
+                </View>
+
+                {/* Right side: Top Categories */}
+                <View className="flex-1 justify-center border-l border-border pl-4">
+                    <Text className="text-xs font-bold text-text-secondary mb-2 uppercase tracking-wider">Top Spends</Text>
+                    {categories.slice(0, 2).map((category) => (
+                        <CategoryBar
+                            key={category.name}
+                            category={category}
+                            maxAmount={maxAmount}
+                        />
+                    ))}
+                </View>
             </View>
 
-            {/* Total */}
-            <Text
-                className="text-3xl font-bold text-text-primary mb-1"
-                style={{ fontVariant: ['tabular-nums'] }}
-            >
-                ₹{totalSpent.toLocaleString('en-IN')}
-            </Text>
-            <Text className="text-sm text-text-secondary mb-3">Total Spent</Text>
-
-            {/* Trend Chart */}
-            <View className="mb-3">
-                <SpendingTrendChart data={weeklyTrend} />
-                <Text className="text-xs text-text-tertiary mt-1">Last 7 days spending trend</Text>
-            </View>
-
-            {/* Category breakdown */}
-            <Text className="text-sm font-semibold text-text-primary mb-2">
-                Top Categories
-            </Text>
-            {categories.slice(0, 3).map((category) => (
-                <CategoryBar
-                    key={category.name}
-                    category={category}
-                    maxAmount={maxAmount}
-                />
-            ))}
-
-            {/* Comparison */}
+            {/* Comparison Footer */}
             <View className="mt-3 pt-3 border-t border-border flex-row items-center">
                 <Text
-                    className={`text-sm font-semibold ${isIncrease ? 'text-alert-amber' : 'text-profit'}`}
+                    className={`text-xs font-semibold ${isIncrease ? 'text-alert-amber' : 'text-profit'}`}
                 >
                     {isIncrease ? '↑' : '↓'} {comparison.percentage}% {isIncrease ? 'higher' : 'lower'}{' '}
                     than last month {isIncrease ? '⚠️' : '🎉'}
